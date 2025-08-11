@@ -3,7 +3,6 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
 from .forms import UserCreationForm, UserChangeForm
 
-# Создадим простые формы — можно использовать минимальный вариант
 from django import forms
 
 class UserCreationForm(forms.ModelForm):

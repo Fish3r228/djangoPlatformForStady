@@ -1,0 +1,22 @@
+[
+  {
+    "model": "users.payment",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "paid_lesson": 11,
+      "amount": "49.99",
+      "payment_date": "2025-08-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "paid_lesson": 14,
+      "amount": "59.99",
+      "payment_date": "2025-08-10T15:30:00Z"
+    }
+  }
+]

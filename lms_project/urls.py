@@ -20,7 +20,7 @@ from django.http import HttpResponse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('materials.urls')),
+    path('api/materials/', include('materials.urls')),  # уточнил префикс, чтобы не конфликтовало
+    path('api/users/', include('users.urls')),          # добавили маршруты из users (включая платежи)
     path('', lambda request: HttpResponse("Добро пожаловать на главную страницу!")),
 ]
-
