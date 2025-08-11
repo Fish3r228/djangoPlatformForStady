@@ -7,7 +7,6 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = ('id', 'course', 'title', 'description', 'preview', 'video_url', 'order', 'created_at')
 
 class CourseSerializer(serializers.ModelSerializer):
-    # read-only nested lessons
     lessons = LessonSerializer(many=True, read_only=True)
 
     class Meta:

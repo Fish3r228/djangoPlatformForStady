@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+*.pyc
 env/
 venv/
 ENV/
@@ -11,6 +12,7 @@ ENV/
 
 # Django
 db.sqlite3
+*.sqlite3
 /media/
 *.log
 

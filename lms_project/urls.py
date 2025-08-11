@@ -16,21 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse, HttpResponse
-from django.conf import settings
-from django.conf.urls.static import static
-import json
-
-def home(request):
-    data = {"message": "Добро пожаловать в LMS API"}
-    json_str = json.dumps(data, ensure_ascii=False)
-    return HttpResponse(json_str, content_type="application/json; charset=utf-8")
+from django.http import HttpResponse
 
 urlpatterns = [
-    path('', home),  # главная страница API
     path('admin/', admin.site.urls),
     path('api/', include('materials.urls')),
+    path('', lambda request: HttpResponse("Добро пожаловать на главную страницу!")),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
