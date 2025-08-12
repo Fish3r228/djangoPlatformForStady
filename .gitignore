@@ -4,11 +4,13 @@ __pycache__/
 *.pyo
 *.pyd
 *.pyc
-env/
+.envenv/
 venv/
 ENV/
 .venv/
 .Python
+.idea
+.env
 
 # Django
 db.sqlite3
