@@ -17,10 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/materials/', include('materials.urls')),  # уточнил префикс, чтобы не конфликтовало
-    path('api/users/', include('users.urls')),          # добавили маршруты из users (включая платежи)
+    path('api/materials/', include('materials.urls')),
+    path('api/users/', include('users.urls')),
     path('', lambda request: HttpResponse("Добро пожаловать на главную страницу!")),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
