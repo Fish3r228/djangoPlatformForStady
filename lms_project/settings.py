@@ -6,9 +6,16 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable is not set!")
+
+# DEBUG — строго булево значение
+DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
+
+# ALLOWED_HOSTS — список без пустых значений и пробелов
+allowed_hosts_env = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",") if host.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,6 +30,7 @@ INSTALLED_APPS = [
 
     'users',
     'materials',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -85,12 +93,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    ),
 }
 
 SIMPLE_JWT = {
@@ -100,5 +108,4 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'users.User'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
