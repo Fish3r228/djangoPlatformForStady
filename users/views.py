@@ -1,15 +1,12 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import NotFound
-from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Payment, User
+from .models import User
 from .serializers import (
-    PaymentSerializer,
     UserRegisterSerializer,
     UserSerializer
 )
-from .filters import PaymentFilter
 
 
 # ===== Регистрация =====
@@ -20,19 +17,6 @@ class RegisterAPIView(generics.CreateAPIView):
     """
     serializer_class = UserRegisterSerializer
     permission_classes = [AllowAny]
-
-
-# ===== CRUD для платежей =====
-class PaymentViewSet(viewsets.ModelViewSet):
-    """
-    CRUD операции для модели Payment.
-    Доступно только авторизованным пользователям.
-    """
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = PaymentFilter
-    permission_classes = [IsAuthenticated]
 
 
 # ===== CRUD для пользователей =====

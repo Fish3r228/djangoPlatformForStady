@@ -4,7 +4,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from materials.serializers import CourseSerializer, LessonSerializer
-from .models import Payment
+from payments.models import Payment
 
 User = get_user_model()
 
