@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 
 class Course(models.Model):
@@ -13,7 +14,7 @@ class Course(models.Model):
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        default=0.00,  # можно ставить цену по умолчанию
+        default=0.00,
         help_text="Цена курса в валюте проекта"
     )
     currency = models.CharField(
@@ -21,9 +22,17 @@ class Course(models.Model):
         default='usd',
         help_text="Валюта для Stripe (usd, eur и т.д.)"
     )
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
+
+    @property
+    def subscribers(self):
+        """
+        Возвращает queryset пользователей, подписанных на курс
+        """
+        return settings.AUTH_USER_MODEL.objects.filter(subscriptions__course=self)
 
 
 class Lesson(models.Model):

@@ -30,3 +30,6 @@ db.sqlite3
 
 # virtualenv
 venv/
+
+# Celery beat files
+celerybeat-schedule*
