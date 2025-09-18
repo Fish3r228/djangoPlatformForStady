@@ -24,4 +24,6 @@ urllib3==2.5.0
 celery>=5.0
 django-celery-beat>=2.5
 python-decouple>=3.8
+gunicorn>=22.0
+
 

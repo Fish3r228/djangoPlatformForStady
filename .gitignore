@@ -1,35 +1,21 @@
-# Python
+# Env
+.env
+
+# Python / Django
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
 *.pyd
-*.pyc
-.envenv/
+
+# Virtualenv / IDE
 venv/
-ENV/
 .venv/
-.Python
-.idea
-.env
-.env.example
-
-# Django
-db.sqlite3
-*.sqlite3
-/media/
-*.log
-
-# VSCode
+.idea/
 .vscode/
 
-# macOS
-.DS_Store
-
-# pyenv
-.python-version
-
-# virtualenv
-venv/
+# Django static/media
+staticfiles/
+media/
 
 # Celery beat files
 celerybeat-schedule*

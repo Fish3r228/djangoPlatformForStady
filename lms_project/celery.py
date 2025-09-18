@@ -1,5 +1,5 @@
 import os
-from celery import Celery
+from celery import Celery   # <-- правильно импортируем Celery из пакета celery
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lms_project.settings")
 
