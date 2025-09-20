@@ -28,6 +28,12 @@
 - SQLite (по умолчанию) или PostgreSQL  
 
 ---
+## 📦 Сервисы
+- **Backend (Django + DRF)**
+- **PostgreSQL**
+- **Redis**
+- **Celery**
+- **Celery Beat**
 
 ## 🚀 Установка и запуск
 
@@ -37,6 +43,15 @@
 git clone https://github.com/yourusername/lms_project.git
 cd lms_project
 
+## 🚀 Запуск проекта
+# Сначала создайте .env файл
+cp .env.example .env
+
+# Соберите образы
+docker-compose build
+
+# Запустите контейнеры
+docker-compose up -d
 
 ## 📡 API эндпоинты
 Курсы и уроки
