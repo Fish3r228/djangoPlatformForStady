@@ -1,54 +1,57 @@
-version: "3.9"
+version: '3.9'
 
 services:
   backend:
     build: .
-    command: gunicorn lms_project.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - .:/app
+    image: myapp:latest
+    container_name: backend
     env_file:
       - .env
+    ports:
+      - "8000:8000"
     depends_on:
       - db
       - redis
-    ports:
-      - "8000:8000"
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  celery:
+    image: myapp:latest
+    container_name: celery
+    env_file:
+      - .env
+    depends_on:
+      - backend
+      - redis
+    command: celery -A lms_project worker -l info
+
+  celery_beat:
+    image: myapp:latest
+    container_name: celery_beat
+    env_file:
+      - .env
+    depends_on:
+      - backend
+      - redis
+    command: celery -A lms_project beat -l info
 
   db:
     image: postgres:15
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
+    container_name: postgres
     env_file:
       - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   redis:
     image: redis:7
+    container_name: redis
     ports:
       - "6379:6379"
-
-  celery:
-    build: .
-    command: celery -A lms_project worker -l info
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    depends_on:
-      - backend
-      - redis
-
-  celery_beat:
-    build: .
-    command: celery -A lms_project beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    depends_on:
-      - backend
-      - redis
 
 volumes:
   postgres_data:
