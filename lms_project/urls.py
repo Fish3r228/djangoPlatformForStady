@@ -22,6 +22,8 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.http import HttpResponse
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from users.views import RegisterAPIView
 from rest_framework import permissions
@@ -50,6 +52,7 @@ urlpatterns = [
     path("api/auth/register/", RegisterAPIView.as_view(), name="register"),
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path('blogs/', include('blog.urls')),
 
     # API приложений
     path("api/materials/", include("materials.urls")),
@@ -74,5 +77,6 @@ urlpatterns = [
     ),
 ]
 
-
-
+# Подключаем media только в DEBUG режиме
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
