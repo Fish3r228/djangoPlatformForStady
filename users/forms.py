@@ -1,4 +1,3 @@
-# users/forms.py
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import User
@@ -33,4 +32,4 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'city', 'avatar', 'is_active', 'is_staff')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'city', 'avatar', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')

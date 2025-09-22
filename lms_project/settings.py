@@ -1,25 +1,20 @@
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv
-from datetime import timedelta
-from decouple import config
-from celery.schedules import crontab
 
-
+# Базовая директория
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Загружаем .env
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-if not SECRET_KEY:
-    raise RuntimeError("SECRET_KEY environment variable is not set!")
+# Безопасность
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
 
-# DEBUG — строго булево значение
-DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
-
-# ALLOWED_HOSTS — список без пустых значений и пробелов
-allowed_hosts_env = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
-ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",") if host.strip()]
-
+# Приложения
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,16 +22,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_beat',
 
-    # мои приложения
-    'materials',
-    'users',
-    'payments',
-
-    # Сторонние библиотеки
+    # сторонние
     'rest_framework',
-    'drf_yasg',
+
+    # локальные
+    'users',
+    'materials',
+    'payments',
+    'blog'
 ]
 
 MIDDLEWARE = [
@@ -54,7 +48,7 @@ ROOT_URLCONF = 'lms_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,17 +62,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
+# База данных (PostgreSQL из .env)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'myprojectdb'),
-        'USER': os.getenv('POSTGRES_USER', 'myprojectuser'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
+# Валидаторы паролей
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -86,54 +82,41 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# Локализация
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Статика/медиа
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-
+STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
+# Кастомная модель пользователя
 AUTH_USER_MODEL = 'users.User'
+
+# DRF (базовая настройка)
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
+
+# Primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Stripe настройки
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
-STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
 
-# Настройки Redis
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-REDIS_DB = os.getenv("REDIS_DB", "0")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "sk_test_sk_test_51S1ON1BAdFbKgv8xcAU13QAGDRjCajfWw9IMKg2M3PBDnT1QbjCSts3xPBlPpUWZxNosuHXjlKTfFrwpsGAGh3Lk00o4HhmnPH")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY", "pk_test_pk_test_51S1ON1BAdFbKgv8xZkIqthPE7qZuIXeq3efVbI4MdiEXVShGNVA3BNaAl9GdaDXbRUMBU9erhspQBIXPRFR5eao000olQPc0Oh")
 
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
-CELERY_TIMEZONE = "Europe/Moscow"
-CELERY_ENABLE_UTC = False
 
-# Настройка периодических задач (celery-beat)
-CELERY_BEAT_SCHEDULE = {
-    "deactivate-inactive-users-every-night": {
-        "task": "users.tasks.deactivate_inactive_users",
-        "schedule": crontab(hour=0, minute=0),  # каждый день в полночь
-    },
-}
+# Если запущены тесты, переключаем базу на SQLite в памяти
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }

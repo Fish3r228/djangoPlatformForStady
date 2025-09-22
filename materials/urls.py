@@ -8,5 +8,5 @@ router.register(r'lessons', LessonViewSet, basename='lesson')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('subscribe/', SubscribeAPIView.as_view(), name='subscribe'),
+    path('subscriptions/', SubscribeAPIView.as_view(), name='subscriptions'),
 ]
