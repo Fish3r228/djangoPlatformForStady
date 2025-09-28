@@ -57,16 +57,19 @@ jobs:
 
       - name: Run migrations
         env:
+          DJANGO_SETTINGS_MODULE: lms_project.settings
+          SECRET_KEY: test_secret_key
           DATABASE_URL: postgres://test_user:test_pass@127.0.0.1:5432/test_db
           REDIS_URL: redis://127.0.0.1:6379/0
-          SECRET_KEY: test_secret_key
         run: |
           python manage.py migrate --noinput
 
       - name: Run tests
         env:
+          DJANGO_SETTINGS_MODULE: lms_project.settings
+          SECRET_KEY: test_secret_key
           DATABASE_URL: postgres://test_user:test_pass@127.0.0.1:5432/test_db
           REDIS_URL: redis://127.0.0.1:6379/0
-          SECRET_KEY: test_secret_key
         run: |
           python manage.py test
+
