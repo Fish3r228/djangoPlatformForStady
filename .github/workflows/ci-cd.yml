@@ -9,11 +9,6 @@ on:
     branches:
       - develop
   workflow_dispatch:
-
-env:
-  DOCKER_REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} 
-
 jobs:
   checks:
     name: Tests & Docker Build
@@ -37,12 +32,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
       - name: Cache pip
         uses: actions/cache@v4
         with:
@@ -50,15 +43,14 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r web/requirements.txt
-
       - name: Run tests
         env:
           DATABASE_URL: postgres://test_user:test_pass@127.0.0.1:5432/test_db
           REDIS_URL: redis://127.0.0.1:6379/0
         run: |
+          pip install pytest
           pytest -q

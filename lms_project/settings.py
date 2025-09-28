@@ -120,3 +120,16 @@ if "test" in sys.argv:
             "NAME": ":memory:",
         }
     }
+
+
+# Проверка, что запускаются тесты
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lms_db',
+        'USER': 'test_user',
+        'PASSWORD': 'test_pass',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
