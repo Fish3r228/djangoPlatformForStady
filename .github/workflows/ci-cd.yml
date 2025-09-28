@@ -3,11 +3,11 @@ name: CI/CD
 on:
   push:
     branches:
-      - develop
+      - homework-deploy
       - main
   pull_request:
     branches:
-      - develop
+      - homework-deploy
   workflow_dispatch:
 jobs:
   checks:
