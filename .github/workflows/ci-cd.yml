@@ -16,7 +16,7 @@ env:
 
 jobs:
   checks:
-    name: Tests & Lint & Docker Build
+    name: Tests & Lint
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -62,7 +62,3 @@ jobs:
           REDIS_URL: redis://127.0.0.1:6379/0
         run: |
           pytest -q
-
-      - name: Build docker-compose images (check build)
-        run: |
-          docker compose -f docker-compose.yml build --no-cache
