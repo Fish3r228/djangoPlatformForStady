@@ -9,11 +9,6 @@ on:
     branches:
       - homework-deploy
   workflow_dispatch:
-
-env:
-  DOCKER_REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   checks:
     name: Tests & Docker Build
