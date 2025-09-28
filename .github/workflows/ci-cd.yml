@@ -53,12 +53,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt   # ✅ исправил путь
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: postgres://test_user:test_pass@127.0.0.1:5432/test_db
+          REDIS_URL: redis://127.0.0.1:6379/0
+        run: |
+          python manage.py migrate --noinput
 
       - name: Run tests
         env:
           DATABASE_URL: postgres://test_user:test_pass@127.0.0.1:5432/test_db
           REDIS_URL: redis://127.0.0.1:6379/0
         run: |
-          pip install pytest
-          pytest -q
+          python manage.py test
