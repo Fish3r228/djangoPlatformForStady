@@ -126,10 +126,11 @@ if "test" in sys.argv:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lms_db',
-        'USER': 'test_user',
-        'PASSWORD': 'test_pass',
+        'NAME': os.getenv('POSTGRES_DB', 'lms_db'),
+        'USER': os.getenv('POSTGRES_USER', 'test_user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'test_pass'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
+
